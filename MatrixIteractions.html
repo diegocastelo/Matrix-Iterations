@@ -1,0 +1,137 @@
+<html>
+
+<script>
+
+  //forma a matriz resultado
+  function montaMatrizTransposta(matriz1, matriz2) {
+    var lin = matriz1.length
+    var col = matriz2[0].length
+
+    //adiciona vários zeros pra depois substituir
+    var result = []
+    for (i = 0; i < lin; i++) {
+      result.push([])
+      for (j = 0; j < col; j++) {
+        result[i].push(0)
+      }
+    }
+
+    //faz a multiplicacao das matrizes linha x coluna e vai adicionando esses valores no array
+    for (i = 0; i < lin; i++) {
+      for (j = 0; j < col; j++) {
+        for (k = 0; k < matriz2.length; k++) {
+          result[i][j] += matriz1[i][k] * matriz2[k][j]
+        }
+      }
+    }
+    return result
+  }
+
+  //Forma a transposta
+  function montarMatrizTransposta(M) {
+    var result = []
+    for (i = 0; i < M.length; i++) {
+      result.push([])
+      for (j = 0; j < M.length; j++) {
+        //j = coluna, i = linha, esse array troca linha por coluna pra formar a transposta
+        result[i].push(M[j][i])
+      }
+    }
+    return result
+  }
+
+  function numeroMult(x, V) {
+    var new_V = []
+    for (i = 0; i < V.length; i++) {
+      new_V.push([x * V[i][0]])
+    }
+    return new_V
+  }
+
+  //forma a norma (que multiplica com a transposta)
+  function gerarNorma(V) {
+    var sum = 0
+    for (i = 0; i < V.length; i++) {
+      sum += V[i][0] ** 2
+    }
+    return sum ** 0.5
+  }
+
+  //subtitui o document.write pra printar as funcoes
+  function exibir(M) {
+    for (i = 0; i < dim; i++) {
+      document.writeln(M[i] + "<br>")
+    }
+  }
+
+  //forma a matriz autoridade, ou seja, soma as linhas da matriz e organiza esses resultados em colunas
+  function formaAutoridade(M) {
+    var A = []
+    for (i = 0; i < M.length; i++) {
+      A.push([0])
+    }
+    for (j = 0; j < M.length; j++) {
+      for (i = 0; i < M.length; i++) {
+        A[j][0] += M[i][j]
+      }
+    }
+    return A
+  }
+
+  //multiplica a norma com a transposta
+  function multiplicaNeM(V, M) {
+    var fator
+    for (i = 0; i < V.length + 1; i++) {
+      fator = montaMatrizTransposta(montarMatrizTransposta(M), M)
+      fator = montaMatrizTransposta(fator, V)
+      V = numeroMult(1 / gerarNorma(fator), fator)
+    }
+    return V
+  }
+
+  //Formação da matriz
+  var dim = Number(prompt("Quantidade de sites:"))
+  var matriz = []
+  for (i = 0; i < dim; i++) {
+    matriz.push([])
+    for (j = 0; j < dim; j++) {
+      var new_num = Number(prompt("Site " + (i + 1) + " faz referência ao site " + (j + 1) + "?"))
+      if (new_num != 1 && new_num != 0) {
+        j--
+      }
+      else {
+        matriz[i].push(new_num)
+      }
+    }
+  }
+
+  //Mostra a matriz A
+  document.writeln("Matriz:", " </br>")
+  exibir(matriz)
+  document.writeln(" </br>")
+
+  var Trans = montarMatrizTransposta(matriz)
+
+  document.writeln("Transposta:", " </br>")
+  exibir(Trans)
+  document.writeln(" </br>")
+
+  var PageRank = formaAutoridade(matriz)
+
+  PageRank = multiplicaNeM(PageRank, matriz)
+
+  document.writeln("Iteração de autoridade:", " </br>")
+  exibir(PageRank)
+  document.writeln(" </br>")
+
+</script>
+
+<head>
+  <style>
+    body {
+      background-color: coral;
+    }
+  </style>
+</head>
+
+</html>
